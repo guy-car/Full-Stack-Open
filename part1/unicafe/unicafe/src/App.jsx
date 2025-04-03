@@ -28,7 +28,7 @@ const App = () => {
     // console.log("handle vote was clicked")
   }
 
-  // determine which anecdote is most popular
+  // determine which anecdote is most popular (test)
 
   const maxVotes = Math.max(...voteCount)
   console.log("max votes: ",maxVotes)
