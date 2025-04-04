@@ -1,52 +1,75 @@
-import { useState } from "react"
-import Note from './components/Note'
+import { useState } from 'react'
+import Search from "./components/Search"
+import Form from "./components/Form"
+import Content from "./components/Content"
 
-const App = (props) => {
+const App = () => {
 
-  const [notes, setNotes] = useState(props.notes)
-  const [newNote, setNewNote] = useState("a new note...")
-  const [showAll, setShowAll] = useState(true)
+  // state values
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
+  ])
 
-  const addNote = (event) => {
+  const [newName, setNewName] = useState('')
+  const [newPhone, setNewPhone] = useState("")
+  const [newFilter, setNewFilter] = useState("")
+
+  // When user clicks "add" run the below
+  const addPerson = (event) => {
     event.preventDefault()
-    const noteObject = {
-      content:newNote,
-      important: Math.random() <0.5,
-      id: String(notes.length +1),
+
+    // checks if name entered already exists in persons state
+    // if true display alert
+    const isAlreadyExisting = persons.some(person => person.name === newName)
+    if (isAlreadyExisting) {
+      alert(`${newName} is already added to phonebook`)
+      return 
     }
-    setNotes(notes.concat(noteObject))
-    setNewNote("")
+
+    // if person is new, add info to person state
+    const personObject= {
+      name: newName,
+      number: newPhone? newPhone : "(number unknown)",
+      id: String(persons.length +1)
+    }
+    setPersons(persons.concat(personObject))
+    setNewName("")
+    setNewPhone("")
+  }
+  
+  // Updates newName in real time when user types in name: field
+  const handleNameChange = (event) => {
+    setNewName(event.target.value)
   }
 
-  const handleNoteChange = (event) => {
-    console.log(event.target.value)
-    setNewNote(event.target.value)
+  // Updates newPhone in real time when user types in number: field
+  const handlePhoneChange = (event) => {
+    setNewPhone(event.target.value)
   }
 
-  const notesToShow = showAll
-    ? notes 
-    : notes.filter(note => note.important)
+  // Updates newFilter in real time when user types in filter: field
+  const handleFilterChange = (event) => {
+    setNewFilter(event.target.value)
+    
+  }
 
+  // App.jsx return starts below
   return (
     <div>
-      <h1>Notes</h1>
-      <div>
-        <button onClick={()=> setShowAll(!showAll)}>
-          show {showAll ? "important" : "all"}
-        </button>
-      </div>
-      <ul>
-        {notesToShow.map(note => 
-          <Note key={note.id} note={note} />
-        )}
-      </ul>
-      <form onSubmit={addNote}>
-        <input 
-        value={newNote}
-        onChange={handleNoteChange}
-        />
-        <button type="submit">save</button>
-      </form>
+      <Search newFilter={newFilter} handleFilterChange={handleFilterChange} />
+      <h2>Add a new person</h2>
+      <Form 
+        addPerson={addPerson}
+        newName={newName}
+        handleNameChange={handleNameChange} 
+        newPhone={newPhone}
+        handlePhoneChange={handlePhoneChange}
+      />
+      <h2>Numbers</h2>
+      <Content persons={persons} newFilter={newFilter}/>
     </div>
   )
 }
