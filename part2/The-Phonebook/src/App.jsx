@@ -11,6 +11,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState("")
   const [newFilter, setNewFilter] = useState("")
+  const [messageToUser, setMessageToUser] = useState(null)
 
   //// Set state to server data on first render
   useEffect( () => {
@@ -49,6 +50,10 @@ const App = () => {
         ))
         setNewName("")
         setNewPhone("")
+        setMessageToUser(`You added a new number for ${newName}`)
+        setTimeout(() => {
+          setMessageToUser(null)
+        }, 5000)
         console.log("input field has been reset")
       })
       .catch(error => {
@@ -70,6 +75,10 @@ const App = () => {
        console.log("new person has been added to phonebook")
        setNewName("")
        setNewPhone("")
+       setMessageToUser(`You added ${newName}`)
+        setTimeout(() => {
+          setMessageToUser(null)
+        }, 5000)
        console.log("input field has been reset")
     })
     }
@@ -83,7 +92,12 @@ const App = () => {
 
       personsService.remove(id)
       .then(()=> {
-        setPersons(persons.filter(person => person.id !== id))
+        setPersons(persons.filter(person => person.id !== id));
+        console.log("you removed someone")
+        setMessageToUser(`You removed ${personToDelete.name}`)
+        setTimeout(() => {
+          setMessageToUser(null)
+        }, 5000)
       })
       .catch(error => {
         console.error("error deleteting person", error)
@@ -108,11 +122,25 @@ const App = () => {
     
   }
 
+  //// Notification element
+  const Notification = ({ message }) => {
+    if (message === null) {
+      return null
+    }
+  
+    return (
+      <div className='error'>
+        {message}
+      </div>
+    )
+  }
+
   //////// App.jsx return starts below
   return (
     <div>
       <Search newFilter={newFilter} handleFilterChange={handleFilterChange} />
       <h2>Add a new person</h2>
+      <Notification message={messageToUser}/>
       <Form 
         addPerson={addPerson}
         newName={newName}
