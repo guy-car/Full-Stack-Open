@@ -1,4 +1,4 @@
-const Content = ({persons, newFilter}) => {
+const Content = ({persons, newFilter, handleDelete}) => {
     return (
             // Defines Persons component to render on page
             // receives persons as prop
@@ -9,7 +9,10 @@ const Content = ({persons, newFilter}) => {
       <>
         {persons.map(person =>
           person.name.toLowerCase().includes(newFilter)?
-          <p key={person.name}>{person.name} {person.number}</p>
+          <div key={person.name}>
+            <span>{person.name} {person.number}</span> 
+            <button onClick={()=>handleDelete(person.id)}>delete</button>
+          </div>
           : ""
         )}
       </>
